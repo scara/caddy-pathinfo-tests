@@ -1,0 +1,9 @@
+:80
+
+root * /usr/share/caddy
+
+php_fastcgi php-fpm:9000 {
+    env SERVER_SOFTWARE Apache
+}
+
+file_server

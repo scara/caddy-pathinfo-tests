@@ -4,7 +4,9 @@ header('Content-Type:text/plain');
 function_exists('curl_init') || die('cUrl extension missing');
 
 $basepaths = [
-    'http://caddy',
+    'http://caddy-v211',
+    'http://caddy-v211-custom-config',
+    'http://caddy-v211-pr3739',
     'http://httpd',
     'http://nginx'
 ];

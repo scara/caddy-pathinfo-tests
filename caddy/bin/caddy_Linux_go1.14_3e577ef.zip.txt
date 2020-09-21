@@ -1,0 +1,5 @@
+https://github.com/caddyserver/caddy/pull/3739/commits
+https://github.com/caddyserver/caddy/actions/runs/263950314
+
+caddy_Linux_go1.14_3e577ef:
+https://github.com/caddyserver/caddy/suites/1218977533/artifacts/18222009

@@ -8,7 +8,11 @@ The code here is just a proof to help the work in https://github.com/caddyserver
 PHP has been exposed via FPM using `v7.4.10` w/o any supplementar extension but those provided by the official docker image.
 
 ### Caddy
-Caddy `v2.1.1` has been configured using a variation of the [expanded form](https://caddyserver.com/docs/caddyfile/directives/php_fastcgi#expanded-form) of the `php_fastcgi` directive to avoid the "redirection issue" which is described in https://github.com/caddyserver/caddy/issues/3718.
+Caddy `v2.1.1` is provided by the official docker image and it has been configured:
+1. using the standard `php_fastcgi` directive, which has an issue in properly managing `PATH_INFO`, described in https://github.com/caddyserver/caddy/issues/3718
+1. using a variation of the [expanded form](https://caddyserver.com/docs/caddyfile/directives/php_fastcgi#expanded-form) of the `php_fastcgi` directive to avoid the "redirection issue"
+
+Besides, the Caddy `v2.1.1` official docker image has been used to host the binary which contains the candidate fix, directly taken from a related GH Action (https://github.com/caddyserver/caddy/actions/runs/263950314), using the standard `php_fastcgi` directive to show the effect of the fix.
 
 ### Apache
 Apache `v2.4.38` is provided by the official docker image i.e. PHP runs as module w/o any PHP configuration change.
@@ -38,7 +42,7 @@ www/
    - `/index.php/some%20%20whitespaces`
 
 ## Usage
-To setup the 3 web server just fire the Compose:
+To setup the 5 web server instances just fire the Compose:
 ``` bash
 $ docker-compose up -d
 ```

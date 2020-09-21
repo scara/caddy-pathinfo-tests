@@ -9,15 +9,32 @@ services:
   #     - ./www/tests:/code:ro
   #   depends_on:
   #     - caddy
-  caddy:
+  caddy-v211:
     image: caddy:2.1.1-alpine
     ports:
       - "8080:80"
     volumes:
-      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy/Caddyfile2:/etc/caddy/Caddyfile:ro
       - ./www:/usr/share/caddy:ro
-      - ./caddy/data:/data
-      - ./caddy/config:/config
+    depends_on:
+      - php-fpm
+  caddy-v211-custom-config:
+    image: caddy:2.1.1-alpine
+    ports:
+      - "8083:80"
+    volumes:
+      - ./caddy/Caddyfile1:/etc/caddy/Caddyfile:ro
+      - ./www:/usr/share/caddy:ro
+    depends_on:
+      - php-fpm
+  caddy-v211-pr3739:
+    image: caddy:2.1.1-alpine
+    ports:
+      - "8084:80"
+    volumes:
+      - ./caddy/Caddyfile2:/etc/caddy/Caddyfile:ro
+      - ./www:/usr/share/caddy:ro
+      - ./caddy/bin/caddy_Linux_go1.14_3e577ef:/usr/bin/caddy:ro
     depends_on:
       - php-fpm
   httpd:
