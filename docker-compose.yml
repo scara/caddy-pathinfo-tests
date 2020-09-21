@@ -1,4 +1,5 @@
 version: '2'
+
 services:
   # testsuite:
   #   image: php:7.4.10-cli
@@ -20,7 +21,13 @@ services:
     depends_on:
       - php-fpm
   httpd:
-    image: php:7.4.10-apache
+    # To use mod_rewrite we need to build our own image - no ENV VAR to enable an Apache module. 
+    # image: php:7.4.10-apache
+    build:
+      context: ./apache
+      args:
+        - PHP_APACHE_IMAGE=7.4.10-apache
+    image: php:7.4.10-apache-mod-rewrite-enabled
     ports:
       - "8081:80"
     volumes:

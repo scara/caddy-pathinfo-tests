@@ -29,16 +29,16 @@ $fixtures = [
         'QUERY_STRING' => 'a=1&b=2'
     ],
     [
-        'name' => 'No rewriting to the index file i.e. non existing PHP file',
+        'name' => 'Non existing folder but with index.php fallback',
         'url' => '/foo',
-        'PATH_INFO' => '<false>',
-        'QUERY_STRING' => '<false>'
+        'PATH_INFO' => '<false>', // <null>=no index.php fallback, <false>=not defined.
+        'QUERY_STRING' => ''     // <null>=no index.php fallback, <false>=not defined.
     ],
     [
-        'name' => 'Non existing PHP file',
+        'name' => 'Non existing PHP file but with index.php fallback',
         'url' => '/foo.php/foo',
-        'PATH_INFO' => '<false>',
-        'QUERY_STRING' => '<false>'
+        'PATH_INFO' => '<false>', // <null>=no index.php fallback, <false>=not defined.
+        'QUERY_STRING' => ''     // <null>=no index.php fallback, <false>=not defined.
     ],
     [
         'name' => 'Not an index file including UTF-8 char into the candidate PATH_INFO',
@@ -74,10 +74,16 @@ function getURIOutput($url) {
 }
 
 function getServerVariable($output, $srvVar) {
+    // Sanity check: the resource has been executed by a PHP interpreter?
+    if (substr($output, 0, 5 ) !== "Array") {
+      return null;
+    }
+
     if (preg_match('/\[(?<srvvar>' . $srvVar .')\] => (?<value>.*)\n/u', $output, $matches)) {
         return $matches['value'];
     }
 
+    // The Server Variable is not there!
     return false;
 }
 
@@ -92,7 +98,12 @@ foreach ($basepaths as $basepath) {
                     'QUERY_STRING'
                 ] as $srvVar) {
             $value = getServerVariable($output, $srvVar);
-            $actualValue = is_bool($value) ? ($value ? '<true>' : '<false>') : $value;
+            $actualValue = $value;
+            if (is_bool($value)) {
+                $actualValue = $value ? '<true>' : '<false>';  
+            } else if ($value === null) {
+                $actualValue = '<null>';
+            }
             if ($fixture[$srvVar] !== $actualValue) {
                 echo "     Test '${fixture['name']}' failed:\n";
                 echo "     => KO ${srvVar}. Expected: '${fixture[$srvVar]}' vs Actual: '${actualValue}'.\n";
